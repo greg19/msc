@@ -1,0 +1,91 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{indentfirst}
+
+\begin{document}
+
+\section{Dystanse}
+
+Można badać korelacje między różnymi dystansami, żeby się czegoś dowiedzieć.
+
+\subsection{Konkretne funkcje}
+
+\subsubsection{Jaccard}
+
+\subsubsection{Cosine}
+
+\subsubsection{Chord}
+
+Odległość Euklidesowa po zrzutowaniu na sferę jednostkową.
+\[
+    ||A - B||^2
+    = (A-B)(A-B)
+    = ||A||^2 + ||B||^2 - 2 (A \cdot B)
+    = 2 (1 - \cos(A, B))
+\]
+Zatem z dokładnością do stałej, jest pierwiastkiem z odległości Cosine.
+
+\subsubsection{SimRank}
+
+\subsubsection{RoleSim}
+
+\subsubsection{Najkrótsza ścieżka w grafie dwudzielnym}
+
+\section{Wizualizacja}
+
+Aby ocenić jakość wizualizacji, można zbadać korelację między odległością w
+embeddingu a normalną.
+
+\subsection{Metody}
+
+\subsubsection{TSNE}
+
+\subsubsection{MDS}
+
+\subsubsection{PCA}
+
+\subsubsection{UMAP}
+
+Na razie nie.
+
+\subsubsection{LDA}
+
+Na razie nie.
+
+\section{Community Detection}
+
+\section{Klastrowanie}
+
+\section{Ocena jakości klastrów}
+
+\subsection{Różne współczynniki}
+
+\subsubsection{Silhouette}
+
+Dla każdego punktu ocenia jak dobrze został przydzielony do swojego klastra
+liczbą z przedziału $[0,1]$.
+
+\paragraph{Silhouette coefficient}
+
+\[ SC = \max_k \tilde{s}(k) \]
+
+Maksymalny średnia wartość Silhouette. Używana czasami do określenia jak
+dobrze dana metoda klastrowania odnajduje klastry.
+
+\subsubsection{Davies-Bouldin index}
+
+\subsubsection{Dunn index}
+
+\subsubsection{Calinski-Harabasz index}
+
+\subsection{Walidacja lingwistyczna}
+
+\section{Identyfikacja grup}
+
+Zamiast podziału na klastry można próbować identyfikować podobne grupy.
+
+\end{document}
