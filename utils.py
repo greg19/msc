@@ -1,11 +1,7 @@
-import csv
 from typing import Any
+import csv
+import numpy as np
 import pandas as pd
-
-
-def binary_encoding(ids: list[int], d: int) -> list[bool]:
-    return [i in ids for i in range(d)]
-
 
 def parse_file(path: str):
     with open(path, 'r', newline='', encoding="utf-8") as csvfile:
@@ -63,3 +59,12 @@ def load_pb(path: str) -> tuple[dict[str, Any], pd.DataFrame, pd.DataFrame]:
     votes_df = votes_df.convert_dtypes()
 
     return meta, projects_df, votes_df
+
+def load_pb_ohe(path):
+    meta, projects, votes_df = load_pb(path)
+
+    def ohe(ids: list[int]) -> list[bool]:
+        return [i in ids for i in range(meta['num_projects'])]
+    votes = np.array(list(votes_df['vote'].map(ohe))).astype('int')
+
+    return meta, projects, votes
