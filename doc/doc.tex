@@ -48,7 +48,7 @@ Która para z nich głosuje podobniej: $v_1$ i $v_2$ czy $v_3$ i $v_4$?
 
 Intuicyjnie powiedzielibyśmy, że druga. Można to tłumaczyć faktem, że spośród
 10 projektów na które głosują $v_3$ i $v_4$, na aż 8 z nich się ze sobą
-zgadzają. W przypdaku pierwszej pary jest to tylko jeden z trzech.
+zgadzają. W Przypadku pierwszej pary jest to tylko jeden z trzech.
 
 Natomiast gdy spojrzymy na odległości Hamminga, okażą się one równe:
 \[ H(A_{v_1},A_{v_2}) = |\{a,b\}| = H(A_{v_3},A_{v_4}) \]
@@ -77,7 +77,7 @@ Aby usystematyzować rozpatrywane miary, zdefiniujmy kilka aksjomatów:
   \item Normalizacja: $s(A,B),d(A,B) \in [0, 1]$
   \item Zwrotność: $s(A,A) = 1, d(A,A) = 0$
   \item Symetria: $s(A,B) = s(B,A), d(A,B) = d(B,A)$
-  \item Nietówność trójkąta: $d(A,B) + d(B,C) \geq d(A,C)$
+  \item Nierówność trójkąta: $d(A,B) + d(B,C) \geq d(A,C)$
 \end{itemize}
 
 Jeżeli jakaś miara miara podobieństwa (odległości) spełnia własność
@@ -95,10 +95,10 @@ Rozważmy następujące projekty i wyborców:
 \begin{align*}
   c_1 &= \text{Sadzenie drzew przy ulicy Adama Mickiewicza} && A_{v_1} = \{c_1\} \\
   c_2 &= \text{Sadzenie drzew przy ulicy Juliusza Słowackiego} && A_{v_2} = \{c_2\} \\
-  c_3 &= \text{Budowa elektorni węglowej} && A_{v_3} = \{c_3\}
+  c_3 &= \text{Budowa elektrowni węglowej} && A_{v_3} = \{c_3\}
 \end{align*}
 
-Intuicyjnie powiedzielibyśmy, że wborcy $v_1$ i $v_2$ są do siebie bardziej
+Intuicyjnie powiedzielibyśmy, że wyborcy $v_1$ i $v_2$ są do siebie bardziej
 podobni niż do wyborcy $v_3$. Wynika to z faktu, że projekty $c_1$ i $c_2$
 są do siebie bardziej podobne niż do projektu $c_3$.
 
@@ -122,7 +122,7 @@ mamy następujące równanie rekurencyjne:
   s^V_R(v, u) &= \frac{D}{|A_v| |A_u|} \sum_{c \in A_v} \sum_{d \in A_u} s^C_R(c, d) \\
   s^C_R(c, d) &= \frac{D}{|V_c| |V_d|} \sum_{v \in V_c} \sum_{u \in V_d} s^C_R(v, u)
 \end{align*}
-Gdzie $v_c$ to zbiór wyborców którzy głosują na proejkt $c$, a $D \in (0, 1)$
+Gdzie $V_c$ to zbiór wyborców którzy głosują na projekt $c$, a $D \in (0, 1)$
 to współczynnik zanikania (decay), potrzebny do zbieżności metody iteracyjnej.
 
 Tak zdefiniowana miara spełnia normalizację, zwrotność i symetrię. Warto
@@ -148,7 +148,7 @@ wyznaczają "kierunek w którym głosuje".
 \subsubsection{Odległość Euklidesa}
 
 Najbardziej oczywistą miarą, kiedy patrzymy na wyborców jak na wektory, jest
-odległość euklidesa:
+odległość Euklidesa:
 \[ d_E(\vec v, \vec u) = | \vec v - \vec u | \]
 
 Spełnia ona symetrię oraz nierówność trójkąta, a jeżeli dodatkowo podzielimy
@@ -165,9 +165,9 @@ trójkąta.
 
 \subsubsection{Odległość cięciwowa (chord)}
 
-Podążając za intuicją, że "wyborcy głosują w jakimś kierynku", możemy
+Podążając za intuicją, że "wyborcy głosują w jakimś kierunku", możemy
 znormalizować ich wektory. Wtedy liczba projektów na które głosują nie będzie
-miała znaczenia, a liczyć się bedzie jedynie kierunek.
+miała znaczenia, a liczyć się będzie jedynie kierunek.
 \[
   d_{Ch}(\vec v, \vec u) =
   \left|\frac{\vec v}{|\vec v|} - \frac{\vec u}{|\vec u|}\right|
