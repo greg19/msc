@@ -191,14 +191,14 @@ normalizację, zwrotność, symetrię i nierówność trójkąta.
 
 \subsubsection{Najkrótsza ścieżka w grafie dwudzielnym}
 
-\subsection{Histogramy}
+\subsection{Gęstość}
 
 Aby lepiej zrozumieć rozważane miary podobieństwa, warto spojrzeć jak wygląda
 ich rozkład wartości na konkretnych danych.
 
 %\begin{figure}[h]
 \noindent
-\includegraphics[width=\textwidth]{dist_hist.png}
+\includegraphics[height=\textheight]{dist_density.png}
 %\end{figure}
 
 \subsection{Korelacje}
@@ -215,6 +215,28 @@ korelacje między nimi.
   Cosine  & 0.96 & 1.00 & 0.97 & 0.57 \\
   Chord   & 0.98 & 0.97 & 1.00 & 0.71 \\
   SimRank & 0.64 & 0.58 & 0.71 & 1.00 \\
+  \hline
+\end{tabular}
+\end{center}
+
+Analogiczną tabelkę możemy zrobić dla podobieństwa projektów, które definiujemy
+zamieniając ze sobą role wyborców i projektów. Wtedy możemy dodać również
+kategorie projektów (np. zieleń, edukacja, przestrzeń publiczna) które są
+wpisane w głosowaniu jako zbiory. Można też dodać grupy docelowe (np. seniorzy,
+dzieci) które również są zbiorami. Kategorie i grupy docelowe będziemy mierzyć
+dystansem Jaccarda.
+
+\begin{center}
+\begin{tabular}{|c|cccccc|}
+  \hline
+    & Jaccard & Cosine & Chord & Simrank & Category & Target \\
+  \hline
+  Jaccard & 1.00 & 0.97 & 0.99 & 0.85 & 0.46 & 0.19 \\
+  Cosine & 0.97 & 1.00 & 0.95 & 0.71 & 0.46 & 0.21 \\
+  Chord & 0.99 & 0.95 & 1.00 & 0.88 & 0.45 & 0.20 \\
+  Simrank & 0.85 & 0.71 & 0.88 & 1.00 & 0.35 & 0.14 \\
+  Category & 0.46 & 0.46 & 0.45 & 0.35 & 1.00	& 0.23 \\
+  Target & 0.19 & 0.21 & 0.20 & 0.14 & 0.23	& 1.00 \\
   \hline
 \end{tabular}
 \end{center}
