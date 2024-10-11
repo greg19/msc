@@ -1,0 +1,234 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{polski}
+
+\begin{document}
+
+\section{Distance}
+
+To find groups of voters that vote similarly, we need to define what does it
+mean for two voters to vote similarly. In our model, a vote is a subset of
+projects $A \subseteq C$. We want to define a function of similarity:
+\[ s : 2^C \times 2^C \to \mathbb{R} \]
+
+Sometimes instead of similarity, it would be easier to talk about distances. It
+is intuitively equivalent: voters are close if and only if they are similar.
+
+\subsection{Different distance functions}
+
+\subsubsection{Hamming distance}
+
+One of intuitive distance function one could think about is the number of
+projects voters disagree on -- meaning one of them approves it and the other
+does not. We could define it as:
+\[ d_H(A,B) = |A \Delta B| \]
+
+In a similar fassion, we could define a similarity function as a number of
+project they agree:
+\[ s(A,B) = |A \cap B| \]
+
+\subsubsection*{Lack of normalisation}
+
+Let's consider following voters:
+\begin{align*}
+  A_{v_1} &= \{ a, c_1 \} \\
+  A_{v_2} &= \{ b, c_1 \} \\
+  A_{v_3} &= \{ a, c_1, c_2, c_3, c_4, c_5, c_6, c_7, c_8 \} \\
+  A_{v_4} &= \{ b, c_1, c_2, c_3, c_4, c_5, c_6, c_7, c_8 \}
+\end{align*}
+
+Which pair of them votes more similarly: $v_1$ and $v_2$ or $v_3$ and $v_4$?
+
+Intuitively, we would say that latter. We could explain that by saying, that
+from ten projects $v_3$ and $v_4$ vote for, they agree on eight of them. In the
+case of $v_1$ and $v_2$ they agree on only one of three.
+
+However, when we look at Hamming distances, they turn out to be equal:
+\[ H(A_{v_1},A_{v_2}) = |\{a,b\}| = H(A_{v_3},A_{v_4}) \]
+
+We could construct an analogous exapmple for similarity measure that counts the
+instersection.
+
+\subsubsection{Jaccard distance}
+
+The above example shows, we should relate number of projects voters both
+approve to the number of projects they both vote for:
+\[ d_J(A,B) = \frac{|A \Delta B|}{|A \cup B|} \]
+
+By doing that we also get a nice property:
+\[ d_J(A,B) \in [0, 1] \]
+
+With it, it is easy to define Jaccard (similarity) coefficient:
+\[ s_J(A,B) = 1 - d_J(A,B) = \frac{|A \cap B|}{|A \cup B|}, \]
+sometimes refered to as IoU (Intersection over Union).
+
+\subsubsection*{First axioms}
+
+To systematize functions we consider, let's define few axioms:
+
+\begin{itemize}
+  \item Normalisation: $s(A,B),d(A,B) \in [0, 1]$
+  \item Reflexivity: $s(A,A) = 1, d(A,A) = 0$
+  \item Symmetry: $s(A,B) = s(B,A), d(A,B) = d(B,A)$
+  \item Triangle inequality: $d(A,B) + d(B,C) \geq d(A,C)$
+\end{itemize}
+
+If a similarity (distance) function satisfies normalisation, it is easy to
+define a distance corresponding to it:
+\[ d(A,B) = 1 - s(A,B) \]
+
+From distances we considered so far, Hamming distance satisfies symmetry,
+but because of not being normalised, it doesn't satisfy reflexivity. Jaccard
+similarity satisfies all four axioms.
+
+\subsubsection{SimRank}
+
+Let's consider the following projects and voters: 
+\begin{align*}
+  c_1 &= \text{Park near Adam Mickiewicz street} && A_{v_1} = \{c_1\} \\
+  c_2 &= \text{Park near Juliusz Słowacki street} && A_{v_2} = \{c_2\} \\
+  c_3 &= \text{Construction of coal-fired power plane} && A_{v_3} = \{c_3\}
+\end{align*}
+
+Intuitively we would say that $v_1$ and $v_2$ are more similar to each other
+than to $v_3$. This is because projects $c_1$ and $c_2$ are more similar to
+each other that to $c_3$.
+
+This motivates the following intuition: voters are similar, if they vote on
+similar projects. We now need to say what does it mean for projects to be
+similar. We can do it in the same exact way: if they are approved by similar
+voters. 
+
+We can specify the above intuition saying that the similarity of two voters
+(projects) is an average similarity of projects they approve (voters they are
+approbed by).
+
+So we have two functions -- voters and projects similarity:
+\begin{align*}
+  s^V_R : V \times V \to [0, 1] \\
+  s^C_R : C \times C \to [0, 1]
+\end{align*}
+We define $s^V_R(v,v)=s^C_R(c,c)=1$. For $v \neq u$ and $c \neq d$
+we have the following recursive equation:
+\begin{align*}
+  s^V_R(v, u) &= \frac{D}{|A_v| |A_u|} \sum_{c \in A_v} \sum_{d \in A_u} s^C_R(c, d) \\
+  s^C_R(c, d) &= \frac{D}{|V_c| |V_d|} \sum_{v \in V_c} \sum_{u \in V_d} s^C_R(v, u)
+\end{align*}
+Where $V_c$ is a set of all voters that approve a project $c$, and
+$D \in (0, 1)$ is a decay coefficient, which is needed for convergence of
+iterative method.
+
+This distance function satisfies normalisation, reflexivity and symmetry.
+Note that reflexivity is staisfied in an artificial way -- setting it
+arbitrarily in definition. For different voters, the maximal similarity they
+can get is $D$.
+
+\subsubsection*{Voters as vectors}
+
+Before introducing next distances, let's look on voters as a vectors of length
+$d = |C|$. There would be a 1 on position $i$ if a voter approves project $c_i$,
+otherwise there would be a 0.
+
+\[ \vec v = \sum_{i=1}^d \vec e_i [c_i \in A_v] \]
+
+Note that projects a voter votes for encode a "direction" they vote in.
+
+\subsubsection{Euclidean distance}
+
+The most obvious distance -- when we look at voters as vectors -- is the
+Euclidean distance:
+\[ d_E(\vec v, \vec u) = | \vec v - \vec u | \]
+
+It satisfies symmetry and triangle inequality, and if we additionaly divide it
+by $\sqrt d$ then also normalisation and reflexivity.
+
+\subsubsection{Cosine similarity}
+
+A less obvious, but far more common in practice, is cosine similarity:
+\[ d_C(\vec v, \vec u) = \frac{\vec v \cdot \vec u}{|\vec v||\vec u|} \]
+
+It satisfies normalisation, reflexivity and symmetry, but does not satisfy
+triangle inequality.
+
+\subsubsection{Chord distance}
+
+Following a intuition that "voters vote in some direction", we could normalise
+the length of their vectors to 1. Then the number of projects they vote for
+will not matter, only the direction will.
+\[
+  d_{Ch}(\vec v, \vec u) =
+  \left|\frac{\vec v}{|\vec v|} - \frac{\vec u}{|\vec u|}\right|
+\]
+
+Note that
+\begin{align*}
+  d_{Ch}(\vec v, \vec u)^2
+  &= \left|\frac{\vec v}{|\vec v|} - \frac{\vec u}{|\vec u|}\right|^2 \\
+  &= \left|\frac{\vec v}{|\vec v|}\right|^2
+   + \left|\frac{\vec u}{|\vec u|}\right|^2
+   - 2 \left( \frac{\vec v}{|\vec v|} \cdot \frac{\vec u}{|\vec u|} \right) \\
+  &= 2(1 - d_C(\vec v, \vec u))
+\end{align*}
+
+So up to a affine transformation, it is equivalent to the square root of chord
+distance.
+
+If we additionaly divide it by $\sqrt 2$, then it will statisfy normalisation,
+reflexivity, symmetry and triangle inequality.
+
+\subsection{Kernel density estimation}
+
+To better understand the similarity coefficients, it is worth to look how do
+they look on a real data.
+
+%\begin{figure}[h]
+\noindent
+\includegraphics[height=\textheight]{dist_density.png}
+%\end{figure}
+
+\subsection{Correlations}
+
+To better understand the similarity coefficients, we can examine the
+correlations wetewen them.
+
+\begin{center}
+\begin{tabular}{|c|cccc|}
+  \hline
+    & Jaccard & Cosine & Chord & SimRank \\
+  \hline
+  Jaccard & 1.00 & 0.96 & 0.98 & 0.64 \\
+  Cosine  & 0.96 & 1.00 & 0.97 & 0.57 \\
+  Chord   & 0.98 & 0.97 & 1.00 & 0.71 \\
+  SimRank & 0.64 & 0.58 & 0.71 & 1.00 \\
+  \hline
+\end{tabular}
+\end{center}
+
+Analogous table can be made for proejcts. We define them by switching the roles
+of voters and projects. In this case we can also include projects categories
+(for example: greenery, education, public space) which are sets in the data
+(one project can have multiple categories). We can also include target groups
+(for example: seniors, children) which are also sets. We will measure them
+using Jaccard distance.
+
+\begin{center}
+\begin{tabular}{|c|cccccc|}
+  \hline
+    & Jaccard & Cosine & Chord & Simrank & Category & Target \\
+  \hline
+  Jaccard & 1.00 & 0.97 & 0.99 & 0.85 & 0.46 & 0.19 \\
+  Cosine & 0.97 & 1.00 & 0.95 & 0.71 & 0.46 & 0.21 \\
+  Chord & 0.99 & 0.95 & 1.00 & 0.88 & 0.45 & 0.20 \\
+  Simrank & 0.85 & 0.71 & 0.88 & 1.00 & 0.35 & 0.14 \\
+  Category & 0.46 & 0.46 & 0.45 & 0.35 & 1.00	& 0.23 \\
+  Target & 0.19 & 0.21 & 0.20 & 0.14 & 0.23	& 1.00 \\
+  \hline
+\end{tabular}
+\end{center}
+
+\end{document}

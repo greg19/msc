@@ -30,9 +30,9 @@ projektów, na których dwóch wyborców się różni -- czyli takich na które 
 dokładnie jeden z nich. Możemy zdefiniować ją wzorem:
 \[ d_H(A,B) = |A \Delta B| \]
 
-W podobny sposób możemy zdefiniować miarę podobieństwa jako liczbę projektów
+W podobny sposób możemy zdefiniować miarę podobieństwa jako liczbę projektów
 na które głosują obaj wyborcy:
-\[ s(A,B) = |A \cap B| = |A \cup B| - d_H(A,B) \]
+\[ s(A,B) = |A \cap B| \]
 
 \subsubsection*{Brak normalizacji}
 
@@ -47,7 +47,7 @@ Rozważmy następujących wyborców:
 Która para z nich głosuje podobniej: $v_1$ i $v_2$ czy $v_3$ i $v_4$?
 
 Intuicyjnie powiedzielibyśmy, że druga. Można to tłumaczyć faktem, że spośród
-10 projektów na które głosują $v_3$ i $v_4$, na aż 8 z nich się ze sobą
+10 projektów na które głosują $v_3$ i $v_4$, na aż 8 z nich się ze sobą
 zgadzają. W Przypadku pierwszej pary jest to tylko jeden z trzech.
 
 Natomiast gdy spojrzymy na odległości Hamminga, okażą się one równe:
@@ -59,7 +59,7 @@ przecięcie zbiorów.
 \subsubsection{Odległość Jaccarda}
 
 Powyższy przykład pokazuje, że powinniśmy odnieść liczbę projektów na których
-wyborcy się nie zgadzają do ilości projektów na które głosują:
+wyborcy się nie zgadzają do ilości projektów na które głosują:
 \[ d_J(A,B) = \frac{|A \Delta B|}{|A \cup B|} \]
 
 Przy okazji otrzymaliśmy przydatną własność:
@@ -128,7 +128,7 @@ to współczynnik zanikania (decay), potrzebny do zbieżności metody iteracyjne
 Tak zdefiniowana miara spełnia normalizację, zwrotność i symetrię. Warto
 jednak zauważyć że zwrotność spełniamy w dość sztuczny sposób -- ustawiając
 ją na sztywno w definicji. Natomiast dla różnych wyborców, maksymalne ich
-podobieństwo wynosi $C$, co łatwo udowodnić korzystając ze zwrotności.
+podobieństwo wynosi $D$, co łatwo udowodnić korzystając ze zwrotności.
 
 % TODO: czy nierówność trójkąta
 
