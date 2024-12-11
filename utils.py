@@ -42,7 +42,7 @@ def load_pb(path: str) -> tuple[dict[str, Any], pd.DataFrame, pd.DataFrame]:
     if 'num_votes' in meta.keys():
         meta['num_votes'] = int(meta['num_votes'])
     if 'budget' in meta.keys():
-        meta['budget'] = int(meta['num_votes'])
+        meta['budget'] = int(meta['budget'])
     if 'min_length' in meta.keys():
         meta['min_length'] = int(meta['min_length'])
     if 'max_length' in meta.keys():

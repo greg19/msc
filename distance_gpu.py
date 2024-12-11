@@ -2,6 +2,10 @@ import numpy as np
 import cupy as cp
 from sklearn.preprocessing import normalize
 
+def _normalize(x: cp.ndarray) -> cp.ndarray:
+    norms = cp.sqrt(cp.sum(x * x, axis=1, keepdims=True))
+    return x / norms
+
 def jaccard(x1: cp.ndarray, x2: cp.ndarray) -> cp.ndarray:
     assert len(x1.shape) == 2
     assert len(x2.shape) == 2
@@ -14,9 +18,9 @@ def jaccard(x1: cp.ndarray, x2: cp.ndarray) -> cp.ndarray:
 
 def cosine(x1: cp.ndarray, x2: cp.ndarray) -> cp.ndarray:
     # TODO: write normalization in cupy instead of convering to numpy
-    x1 = normalize(x1.get(), norm='l2', axis=1) # type: ignore
-    x2 = normalize(x2.get(), norm='l2', axis=1) # type: ignore
-    return cp.maximum(1 - (cp.asarray(x1) @ cp.asarray(x2).T), 0)
+    x1 = _normalize(x1) # type: ignore
+    x2 = _normalize(x2) # type: ignore
+    return cp.maximum(1 - (x1 @ x2.T), 0)
 
 def simrank_both(xs: cp.ndarray, C1=0.8, C2=0.8, max_iter=100) -> tuple[cp.ndarray, cp.ndarray]:
     n, m = xs.shape
