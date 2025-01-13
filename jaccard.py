@@ -1,8 +1,7 @@
-from re import X
-from typing import Literal
 import numpy as np
 import math
 from pulp import *
+from collections import Counter
 
 def jaccard(_x: np.ndarray, _y: np.ndarray) -> np.ndarray:
     if _x.shape[-1] != _y.shape[-1]:
@@ -36,6 +35,7 @@ def jaccard_to_closest(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.nda
 def _gen_lp_program(x: np.ndarray, dist: np.ndarray) -> tuple[LpProblem, list, list, list]:
     assert len(x.shape) == 2
     assert len(dist.shape) == 1
+    eps = 1e-6
     n, d = x.shape
     A = [
         [LpVariable(f"a_{k}_{i}", 0, 1) for i in range(d)]
@@ -53,23 +53,8 @@ def _gen_lp_program(x: np.ndarray, dist: np.ndarray) -> tuple[LpProblem, list, l
             prob += A[k][i] <= x[k][i]
             prob += B[k][i] >= C[i]
             prob += B[k][i] >= x[k][i]
-        prob += lpDot([1]*d, A[k]) >= lpDot(1-dist, B[k])
+        prob += lpSum(A[k]) >= (1 - dist[k]) * lpSum(B[k]) + eps
     return prob, A, B, C
-
-def center(x: np.ndarray):
-    assert len(x.shape) == 2
-    n, d = x.shape
-    l = 0
-    r = 1
-    while r - l > 1e-9:
-        dist = (r + l) / 2
-        prob, A, B, C = _gen_lp_program(x, dist * np.ones(d))
-        status = prob.solve(PULP_CBC_CMD(msg=False))
-        if status == 1:
-            r = dist
-        elif status == -1:
-            l = dist
-    return A, B, C, dist
 
 def is_blocking_coalition(x: np.ndarray, dist: np.ndarray, rho: float = 1.0):
     assert(len(x.shape) == 2)
@@ -79,7 +64,12 @@ def is_blocking_coalition(x: np.ndarray, dist: np.ndarray, rho: float = 1.0):
     status = prob.solve(PULP_CBC_CMD(msg=False))
     return A, B, C, status
 
-def find_blocking_coalition(V: np.ndarray, centers: np.ndarray, size: int, rho=1.0) -> tuple[np.ndarray, np.ndarray] | None:
+def find_blocking_coalition(
+        V: np.ndarray,
+        centers: np.ndarray,
+        size: int,
+        rho: float
+    ) -> tuple[np.ndarray, np.ndarray] | None:
     n = len(V)
     d_c, _ = jaccard_to_closest(V, centers)
     d_v = jaccard(V, V)
@@ -92,7 +82,7 @@ def find_blocking_coalition(V: np.ndarray, centers: np.ndarray, size: int, rho=1
 
     curr = np.arange(n)
     while True:
-        G = G[np.ix_(curr, curr)]
+        G = G2[np.ix_(curr, curr)]
         which = np.sum(G, axis=0) >= size
         curr = curr[which]
         if np.all(which):
@@ -106,5 +96,42 @@ def find_blocking_coalition(V: np.ndarray, centers: np.ndarray, size: int, rho=1
             A, B, C, status = is_blocking_coalition(V[arr], d_c[arr], rho=rho)
             if status == 1:
                 return arr, np.array([value(c) for c in C])
-
     return None
+
+def local_capture_fixed(V: np.ndarray, k: int, rho: float, steps: int) -> np.ndarray | None:
+    assert len(V.shape) == 2
+    assert k > 0
+    n, d = V.shape
+    centers = np.eye(k, d)
+    for _ in range(steps):
+        match find_blocking_coalition(V, centers, math.ceil(n / k), rho):
+            case None:
+                return centers
+            case v, c:
+                extended = np.concatenate((centers, c.reshape(1, d)), axis=0)
+                _, ass = jaccard_to_closest(V, extended)
+                counter = dict(Counter(ass))
+                counter = {i: counter.get(i, 0) for i in range(k+1)}
+                i = min(counter, key=counter.get)
+                assert i != k
+                assert (ass[v] == k).all()
+                centers[i] = c
+    return None
+
+def local_capture(V: np.ndarray, k: int, steps: int) -> tuple[np.ndarray, float]:
+    assert len(V.shape) == 2
+    assert k > 0
+    l = 1
+    r = 1
+    while local_capture_fixed(V, k, r, steps) is None:
+        r += 0.1
+    while r - l > 1e-6:
+        print(l, r)
+        m = (l + r) / 2
+        if local_capture_fixed(V, k, m, steps) is None:
+            l = m
+        else:
+            r = m
+    res = local_capture_fixed(V, k, r, steps)
+    assert res is not None
+    return res, r
