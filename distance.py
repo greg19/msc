@@ -2,6 +2,14 @@ import numpy as np
 from sklearn.preprocessing import normalize
 from scipy.spatial import distance_matrix
 
+def hamming(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
+    assert len(x1.shape) == 2
+    assert len(x2.shape) == 2
+    assert x1.shape[-1] == x2.shape[-1]
+    d = x1.shape[-1]
+    x1 = x1.reshape(-1, 1, d)
+    return (x1 != x2).sum(axis=-1)
+
 def jaccard(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     assert len(x1.shape) == 2
     assert len(x2.shape) == 2
@@ -10,7 +18,7 @@ def jaccard(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     x1 = x1.reshape(-1, 1, d)
     a = np.minimum(x1, x2).sum(axis=-1)
     b = np.maximum(x1, x2).sum(axis=-1)
-    return 1 - a / b
+    return np.nan_to_num(1 - a / b, nan=0)
 
 def cosine(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     x1 = normalize(x1, norm='l2', axis=1) # type: ignore
@@ -42,3 +50,9 @@ def simrank_both(xs: np.ndarray, C1=0.8, C2=0.8, max_iter=100) -> tuple[np.ndarr
 
 def simrank(xs: np.ndarray, C1=0.8, C2=0.8, max_iter=100) -> np.ndarray:
     return simrank_both(xs, C1, C2, max_iter)[0]
+
+def to_ranking(dist: np.ndarray) -> np.ndarray:
+    return np.argsort(dist)
+
+def normalize_by_ranking(dist: np.array) -> np.ndarray:
+    return np.argsort(np.argsort(dist))

@@ -2,6 +2,7 @@ from typing import Any
 import csv
 import numpy as np
 import pandas as pd
+from sklearn.metrics import euclidean_distances
 
 def parse_file(path: str):
     with open(path, 'r', newline='', encoding="utf-8") as csvfile:
@@ -42,7 +43,7 @@ def load_pb(path: str) -> tuple[dict[str, Any], pd.DataFrame, pd.DataFrame]:
     if 'num_votes' in meta.keys():
         meta['num_votes'] = int(meta['num_votes'])
     if 'budget' in meta.keys():
-        meta['budget'] = int(meta['budget'])
+        meta['budget'] = float(meta['budget'])
     if 'min_length' in meta.keys():
         meta['min_length'] = int(meta['min_length'])
     if 'max_length' in meta.keys():
@@ -75,3 +76,7 @@ def load_pb_ohe(path) -> tuple[dict[str, Any], pd.DataFrame, np.ndarray]:
     votes = np.array(list(votes_df['vote'].map(ohe))).astype('int')
 
     return meta, projects, votes
+
+def stress(mds, dist):
+    stress = 0.5 * np.sum((euclidean_distances(mds.embedding_) - dist) ** 2)
+    return np.sqrt(stress / (0.5 * np.sum(dist**2)))
