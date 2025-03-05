@@ -76,10 +76,10 @@
 \maketitle
 
 \begin{abstract}
-W pracy zastosowano algorytmy klastrowania do danych wyborczyn w głosowaniu
-przez aprobaty na budżet partycypacyjy, uwzględniając zarówno dane z faktycznych
-wyborów i modele syntetyczne. Przeanalizowano różne definicje odległości głosów
-pod kątem efektywności znajdowania grup wyborców głosujących podobnie.
+W pracy zastosowano algorytmy klastrowania do danych wyborczych w głosowaniu
+przez aprobaty na budżet partycypacyjny, uwzględniając zarówno dane z faktycznych
+wyborów, jak i modele syntetyczne. Przeanalizowano różne definicje odległości
+głosów pod kątem efektywności znajdowania grup wyborców głosujących podobnie.
 \end{abstract}
 
 \tableofcontents
@@ -89,27 +89,26 @@ pod kątem efektywności znajdowania grup wyborców głosujących podobnie.
 \chapter*{Wprowadzenie}
 \addcontentsline{toc}{chapter}{Wprowadzenie}
 
-Blabalizator różnicowy jest podstawowym narzędziem blabalii
-fetorycznej.  Dlatego naukowcy z~całego świata prześcigają się
-w~próbach efektywnej implementacji.  Opracowana przez prof. Fifaka
-teoria fetorów $\sigma$-$\rho$ otwiera w~tej dziedzinie nowe
-możliwości.  Wykorzystujemy je w~niniejszej pracy.
+W ostatnim czasie w Teorii Wyboru Społecznego popularność zyskało wiele
+aksjomatów proporcjonalności. Mówią one, że głos odpowiednio dużych grup
+wyborców powinien być odpowiednio uwzględniony -- proporcjonalnie do wielkości
+takiej grupy. Jednym z najbardziej popularnych aksjomatów jest EJR, który
+dotyczy grup $\ell$-spójnych. O ile jest on często rozważany teoretycznie, w
+praktyce okazuje się problematyczny. Pierwszą przeszkodą w użyciu go
+w praktyce jest to, że zarówno znajdowanie grup $\ell$-spójnych, jak i
+sama weryfikacja czy dany wynik spełnia ten aksjomat, są problemami
+NP-trudnymi. Drugim niepożądanym zjawiskiem jest to, że w praktyce takie grupy
+występują bardzo rzadko dla $\ell > 2$.
 
-Przystępne wprowadzenie do blabalii fetorycznej można znaleźć w~pracy
-Fifaka i~Gryzogrzechotalskiego \cite{ffgg}.  Dlatego w~niniejszym
-tekście ograniczymy się do przypomnienia pojęć podstawowych.
+Aby rozwiązać te problemy, powstał aksjomat EJR+, który jest weryfikowalny w
+czasie wielomianowym. ??
 
-Praca składa się z~pięciu rozdziałów i~dodatków.
-W~rozdziale~\ref{r:pojecia} przypomniano podstawowe pojęcia blabalii
-fetorycznej.  Dotychczasowe próby implementacji blablizatora
-różnicowego zestawiono w~rozdziale~\ref{r:losers}.
-Rozdział~\ref{r:fifak} przedstawia teorię Fifaka i~wyjaśnia sposób jej
-wykorzystania w~implementacji blabalizatora.  W~rozdziale \ref{r:impl}
-przedstawiono algorytm blabalizy i~realizujący go program komputerowy.
-Ostatni rozdział zawiera przemyślenia dotyczące możliwego wpływu
-dostępności efektywnej blabalizy numerycznej na rozwój blabalii
-fetorycznej.  W~dodatkach umieszczono najciekawszy fragment programu,
-przykładowe dane i~wyniki działania programu.
+Podejście zastosowane w pracy ma wymiar praktyczny i używa uczenia maszynowego
+do identyfikacji grup wyborców głosujących podobnie. W podziale X przetestowano
+różne pojęcia podobieństwa głosów oraz różnice między nimi. Następnie w
+rozdziale X użyto algorytmu $k$-median do klastrowania. Wszystkie eksperymenty
+zostały przeprowadzone na danych z biblioteki Pabulib oraz na danych
+wygenerowanych z modeli syntetycznych.
 
 \chapter{Podstawowe pojęcia}\label{r:pojecia}
 
